@@ -18,7 +18,7 @@ const questions = [
 ];
 
 export default function Quiz() {
-  const { user, loading } = useUser(); // ✅ FIX IS HERE
+  const { user, loading } = useUser();
 
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -45,25 +45,21 @@ export default function Quiz() {
 
     if (index + 1 < questions.length) {
       setIndex(index + 1);
-    } else {
-      setFinished(true);
-
-      await saveQuizAttempt({
-        user_id: user.id,
-        subject: "General",
-        score: newScore,
-        total_questions: questions.length,
-        const attemptNumber = await getNextAttemptNumber(user.id, "General");
-
-        await saveQuizAttempt({
-          user_id: user.id,
-          subject: "General",
-          score: newScore,
-          total_questions: questions.length,
-          attempt_number: attemptNumber
-        });
-      });
+      return;
     }
+
+    setFinished(true);
+
+    // 🔥 correct attempt logic (FIXED)
+    const attemptNumber = await getNextAttemptNumber(user.id, "General");
+
+    await saveQuizAttempt({
+      user_id: user.id,
+      subject: "General",
+      score: newScore,
+      total_questions: questions.length,
+      attempt_number: attemptNumber
+    });
   }
 
   if (finished) {
@@ -71,7 +67,7 @@ export default function Quiz() {
       <div>
         <h1>Quiz Finished</h1>
         <p>
-          Score: {score}/{questions.length}
+          Score: {score} / {questions.length}
         </p>
       </div>
     );
