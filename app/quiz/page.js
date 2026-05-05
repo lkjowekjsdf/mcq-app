@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { saveQuizAttempt } from "../../lib/quiz";
 import useUser from "../../lib/useUser";
+import { saveQuizAttempt } from "../../lib/quiz";
 
 const questions = [
   {
@@ -23,11 +23,6 @@ export default function Quiz() {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
-
-  if (!user) {
-    window.location.href = "/login";
-    return null;
-  }
 
   const current = questions[index];
 
@@ -53,6 +48,9 @@ export default function Quiz() {
       });
     }
   }
+
+  if (loading) return <p>Loading...</p>;
+  if (!user) return null;
 
   if (finished) {
     return (
