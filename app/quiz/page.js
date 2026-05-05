@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import useUser from "../../lib/useUser";
-import { saveQuizAttempt } from "../../lib/quiz";
+import { saveQuizAttempt, getNextAttemptNumber } from "../../lib/quiz";
 
 const questions = [
   {
@@ -53,7 +53,15 @@ export default function Quiz() {
         subject: "General",
         score: newScore,
         total_questions: questions.length,
-        attempt_number: 1
+        const attemptNumber = await getNextAttemptNumber(user.id, "General");
+
+        await saveQuizAttempt({
+          user_id: user.id,
+          subject: "General",
+          score: newScore,
+          total_questions: questions.length,
+          attempt_number: attemptNumber
+        });
       });
     }
   }
