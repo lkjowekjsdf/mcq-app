@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "../../lib/supabase";
+import { useState, useEffect } from "react";
 import useUser from "../../lib/useUser";
 import { saveQuizAttempt } from "../../lib/quiz";
 
@@ -19,10 +18,20 @@ const questions = [
 ];
 
 export default function Quiz() {
-  const { user } = useUser();
+  const { user, loading } = useUser(); // ✅ FIX IS HERE
+
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      window.location.href = "/login";
+    }
+  }, [user, loading]);
+
+  if (loading) return <p>Loading...</p>;
+  if (!user) return null;
 
   const current = questions[index];
 
@@ -49,14 +58,13 @@ export default function Quiz() {
     }
   }
 
-  if (loading) return <p>Loading...</p>;
-  if (!user) return null;
-
   if (finished) {
     return (
       <div>
         <h1>Quiz Finished</h1>
-        <p>Score: {score}/{questions.length}</p>
+        <p>
+          Score: {score}/{questions.length}
+        </p>
       </div>
     );
   }
@@ -64,6 +72,7 @@ export default function Quiz() {
   return (
     <div>
       <h1>Quiz</h1>
+
       <h2>{current.question}</h2>
 
       {current.options.map((opt) => (
