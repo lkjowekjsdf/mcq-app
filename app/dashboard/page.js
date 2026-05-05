@@ -27,10 +27,10 @@ export default function Dashboard() {
       >
         Logout
       </button>
-    </div>
-    
-    <button onClick={() => window.location.href = "/quiz"}>
+
+      <button onClick={() => window.location.href = "/quiz"}>
         Start Quiz
-    </button>
+      </button>
+    </div>
   );
 }
