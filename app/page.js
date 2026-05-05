@@ -1,31 +1,22 @@
 "use client";
 
-import useUser from "../lib/useUser";
+import { useEffect } from "react";
 import { supabase } from "../lib/supabase";
 
 export default function Home() {
-  const { user, loading } = useUser();
+  useEffect(() => {
+    async function check() {
+      const { data } = await supabase.auth.getUser();
 
-  if (loading) return <p>Loading...</p>;
+      if (data.user) {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/login";
+      }
+    }
 
-  if (!user) {
-    window.location.href = "/login";
-    return null;
-  }
+    check();
+  }, []);
 
-  return (
-    <div>
-      <h1>Welcome</h1>
-      <p>{user.email}</p>
-
-      <button
-        onClick={async () => {
-          await supabase.auth.signOut();
-          window.location.href = "/login";
-        }}
-      >
-        Logout
-      </button>
-    </div>
-  );
+  return <p>Loading...</p>;
 }
