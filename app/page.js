@@ -25,6 +25,14 @@ export default function Home() {
   return (
     <div>
       <h1>Welcome to your app</h1>
+
+      <button
+        onClick={async () => {
+          await supabase.auth.signOut();
+          window.location.href = "/login";
+        }}
+      >
+        Logout
+      </button>
     </div>
   );
-}
