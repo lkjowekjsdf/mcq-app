@@ -7,15 +7,32 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   async function signUp() {
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) alert(error.message);
-    else alert("Check your email");
+    const { error } = await supabase.auth.signUp({
+      email,
+      password
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    alert("Check your email to confirm signup");
   }
 
   async function signIn() {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) alert(error.message);
-    else alert("Logged in");
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    // redirect after login
+    window.location.href = "/";
   }
 
   return (
