@@ -1,30 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import useUser from "../lib/useUser";
 import { supabase } from "../lib/supabase";
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function checkUser() {
-      const { data } = await supabase.auth.getUser();
-
-      if (!data.user) {
-        window.location.href = "/login";
-      } else {
-        setLoading(false);
-      }
-    }
-
-    checkUser();
-  }, []);
+  const { user, loading } = useUser();
 
   if (loading) return <p>Loading...</p>;
 
+  if (!user) {
+    window.location.href = "/login";
+    return null;
+  }
+
   return (
     <div>
-      <h1>Welcome to your app</h1>
+      <h1>Welcome</h1>
+      <p>{user.email}</p>
 
       <button
         onClick={async () => {
